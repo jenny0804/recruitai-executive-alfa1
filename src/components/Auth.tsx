@@ -15,17 +15,17 @@ export const Auth: React.FC<{ onAuthSuccess: () => void }> = ({ onAuthSuccess })
   const [companyName, setCompanyName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
   const validatePassword = (pass: string) => {
-    const rules = {
+    return {
       length: pass.length >= 8,
       upper: /[A-Z]/.test(pass),
       lower: /[a-z]/.test(pass),
       number: /[0-9]/.test(pass),
       special: /[!@#$%^&*(),.?":{}|<>]/.test(pass)
     };
-    return rules;
   };
 
   const passwordRules = validatePassword(password);
@@ -35,28 +35,31 @@ export const Auth: React.FC<{ onAuthSuccess: () => void }> = ({ onAuthSuccess })
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setMessage(null);
 
     try {
       if (mode === 'register') {
-        if (!isPasswordValid) throw new Error('La contraseña no cumple con los requisitos de seguridad.');
-        
         // 1. Sign up user with metadata
-        const { error: authError } = await supabase.auth.signUp({
+        const { data: signUpData, error: authError } = await supabase.auth.signUp({
           email,
           password,
           options: {
             data: {
               role,
               full_name: fullName,
-              company_name: companyName
+              company_name: companyName,
             }
           }
         });
 
         if (authError) throw authError;
 
-        alert('Registro exitoso. Si la confirmación de correo está activada, revisa tu bandeja de entrada.');
-        setMode('login');
+        if (signUpData.user && !signUpData.session) {
+          setMessage('Registro exitoso. Por favor, confirma tu correo electrónico para poder ingresar.');
+        } else {
+          setMessage('Registro exitoso. Redirigiendo...');
+          setTimeout(() => setMode('login'), 2000);
+        }
       } else {
         const { error: loginError } = await supabase.auth.signInWithPassword({
           email,
@@ -97,6 +100,13 @@ export const Auth: React.FC<{ onAuthSuccess: () => void }> = ({ onAuthSuccess })
               <div className="p-3 bg-red-50 border border-red-100 rounded-lg flex items-center gap-2 text-red-600 text-sm">
                 <AlertCircle size={16} />
                 <span>{error}</span>
+              </div>
+            )}
+
+            {message && (
+              <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-lg flex items-center gap-2 text-emerald-600 text-sm">
+                <AlertCircle size={16} className="text-emerald-500" />
+                <span>{message}</span>
               </div>
             )}
 
@@ -205,13 +215,18 @@ export const Auth: React.FC<{ onAuthSuccess: () => void }> = ({ onAuthSuccess })
               disabled={loading || (mode === 'register' && !isPasswordValid)}
               className="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 disabled:opacity-50 disabled:shadow-none"
             >
-              {loading ? 'Procesando...' : (mode === 'login' ? 'Iniciar Sesión' : 'Registrarse')}
+              {loading ? 'Procesando...' : 
+               mode === 'login' ? 'Iniciar Sesión' : 'Registrarse'}
             </button>
           </form>
 
           <div className="mt-6 text-center">
             <button 
-              onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
+              onClick={() => {
+                setMode(mode === 'login' ? 'register' : 'login');
+                setError(null);
+                setMessage(null);
+              }}
               className="text-indigo-600 font-semibold text-sm hover:underline"
             >
               {mode === 'login' ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión'}

@@ -78,7 +78,7 @@ export function RecruiterDashboard({ session, profile, setProfile, handleLogout 
     setIsLoading(true);
 
     try {
-      const history = messages.map(m => ({
+      const history = [...messages, userMessage].map(m => ({
         role: m.role,
         parts: [{ text: m.text }]
       }));
@@ -189,7 +189,7 @@ export function RecruiterDashboard({ session, profile, setProfile, handleLogout 
     setIsLoading(true);
     setViewMode('scorecard');
     
-    const prompt = "Genera un cuadro comparativo de todos los candidatos en formato JSON. Para cada candidato incluye: nombre, experiencia_años, habilidades_clave (array), match_porcentaje (0-100) y observacion_breve. Responde ÚNICAMENTE con el JSON, sin texto adicional.";
+    const prompt = "Genera un cuadro comparativo de todos los candidatos en formato JSON. Para cada candidato incluye: nombre, experiencia_años, habilidades_clave (array), match_porcentaje (0-100) y observacion_breve. Las habilidades_clave mostradas deberan ser unicamente las que cumplen con el perfil maestro (masterProfile). Responde ÚNICAMENTE con el JSON, sin texto adicional. Ordena los resultados de manera descendente basandote en el match_porcentaje.";
     
     try {
       const pdfBase64s = pdfFiles.map(f => f.base64);
@@ -296,7 +296,7 @@ export function RecruiterDashboard({ session, profile, setProfile, handleLogout 
       const chatData = messages.map(msg => [
         msg.role === 'user' ? 'RECLUTADOR' : 'ASISTENTE AI',
         cleanMarkdown(msg.text),
-        msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       ]);
 
       autoTable(doc, {
@@ -322,7 +322,7 @@ export function RecruiterDashboard({ session, profile, setProfile, handleLogout 
   };
 
   const openManual = () => {
-    window.open('/Documentacion/Manual_de_uso_RecruitAI_Executive_vAlfa1_0.pdf', '_blank');
+    window.open('/Documentacion/Manual_de_uso_RecruitAI_Executive_vBeta1_0.pdf', '_blank');
   };
 
   return (
@@ -434,16 +434,17 @@ export function RecruiterDashboard({ session, profile, setProfile, handleLogout 
               </div>
             </div>
 
-            <div className="relative">
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 bg-slate-900 text-white text-[10px] font-bold uppercase rounded tracking-wider shadow-sm">Perfil Maestro</span>
+                <span className="text-[10px] text-slate-500 font-medium uppercase tracking-tight">Descripción del Puesto</span>
+              </div>
               <textarea 
-                placeholder="Pegue aquí el Perfil Maestro (Descripción de Puesto)..."
+                placeholder="Pegue aquí los requisitos del cargo y la descripción del puesto..."
                 value={masterProfile}
                 onChange={(e) => setMasterProfile(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900/5 transition-all resize-none h-20"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900/5 transition-all resize-none h-24 shadow-inner"
               />
-              <div className="absolute top-2 right-2">
-                <span className="px-2 py-0.5 bg-slate-200 text-slate-600 text-[9px] font-bold uppercase rounded">Perfil Maestro</span>
-              </div>
             </div>
           </div>
 
@@ -651,7 +652,7 @@ export function RecruiterDashboard({ session, profile, setProfile, handleLogout 
                         </div>
                       </div>
                       <span className="text-[10px] text-slate-400 mt-1 block px-1">
-                        {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>
                   </div>

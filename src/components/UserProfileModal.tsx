@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, User, Shield, Camera, Check, AlertCircle } from 'lucide-react';
+import { X, User, Camera, Check, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { supabase } from '../lib/supabase';
 
@@ -19,7 +19,7 @@ export function UserProfileModal({ isOpen, onClose, profile, onUpdate }: UserPro
   const [avatarSeed, setAvatarSeed] = useState(profile?.avatar_seed || profile?.id);
   const [isUpdating, setIsUpdating] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
-
+  
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsUpdating(true);
@@ -38,7 +38,7 @@ export function UserProfileModal({ isOpen, onClose, profile, onUpdate }: UserPro
         updateData.position = position;
       } else {
         updateData.experience_years = parseInt(experienceYears) || 0;
-        updateData.skills = skills.split(',').map(s => s.trim()).filter(s => s !== '');
+        updateData.skills = skills.split(',').map((s: string) => s.trim()).filter((s: string) => s !== '');
       }
 
       // Update specific table

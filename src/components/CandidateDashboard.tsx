@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import { 
   Send, 
   User, 
@@ -7,7 +9,8 @@ import {
   FileText,
   Trash2,
   HelpCircle,
-  LogOut
+  LogOut,
+  Download
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
@@ -63,7 +66,7 @@ export function CandidateDashboard({ session, profile, setProfile, handleLogout 
     setIsLoading(true);
 
     try {
-      const history = messages.map(m => ({
+      const history = [...messages, userMessage].map(m => ({
         role: m.role,
         parts: [{ text: m.text }]
       }));
@@ -112,8 +115,67 @@ export function CandidateDashboard({ session, profile, setProfile, handleLogout 
     }
   };
 
+  const cleanMarkdown = (text: string) => {
+    return text
+      .replace(/\*\*\*(.*?)\*\*\*/g, '$1')
+      .replace(/\*\*(.*?)\*\*/g, '$1')
+      .replace(/\*(.*?)\*/g, '$1')
+      .replace(/__(.*?)__/g, '$1')
+      .replace(/_(.*?)_/g, '$1')
+      .replace(/^#+\s+/gm, '')
+      .replace(/`{1,3}(.*?)`{1,3}/g, '$1')
+      .replace(/^\s*[-*+]\s+/gm, '• ')
+      .replace(/^\s*\d+\.\s+/gm, '')
+      .replace(/\[(.*?)\]\(.*?\)/g, '$1');
+  };
+
+  const exportChatHistory = () => {
+    if (messages.length <= 1) {
+      alert("No hay historial de conversación para exportar");
+      return;
+    }
+
+    try {
+      const doc = new jsPDF();
+      doc.setFontSize(18);
+      doc.setTextColor(15, 23, 42); 
+      doc.text('Preparación de Entrevista - RecruitAI', 14, 22);
+      
+      doc.setFontSize(10);
+      doc.setTextColor(100, 116, 139);
+      doc.text(`Candidato: ${profile?.full_name || 'Usuario'}`, 14, 30);
+      doc.text(`Generado el: ${new Date().toLocaleDateString()} a las ${new Date().toLocaleTimeString()}`, 14, 35);
+
+      const chatData = messages.map(msg => [
+        msg.role === 'user' ? 'CANDIDATO' : 'ENTREVISTADOR AI',
+        cleanMarkdown(msg.text),
+        new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      ]);
+
+      autoTable(doc, {
+        startY: 45,
+        head: [['Remitente', 'Mensaje', 'Hora']],
+        body: chatData,
+        headStyles: { fillColor: [79, 70, 229], textColor: [255, 255, 255] },
+        alternateRowStyles: { fillColor: [248, 250, 252] },
+        styles: { fontSize: 8, cellPadding: 3, overflow: 'linebreak' },
+        columnStyles: {
+          0: { cellWidth: 30, fontStyle: 'bold' },
+          1: { cellWidth: 'auto' },
+          2: { cellWidth: 20, halign: 'center' }
+        },
+        margin: { top: 40 }
+      });
+
+      doc.save(`entrenamiento_entrevista_${new Date().toISOString().split('T')[0]}.pdf`);
+    } catch (error) {
+      console.error("Error exporting chat:", error);
+      alert("Hubo un error al generar el PDF del chat.");
+    }
+  };
+
   const openManual = () => {
-    window.open('/Documentacion/Manual_de_uso_RecruitAI_Executive_vAlfa1_0.pdf', '_blank');
+    window.open('/Documentacion/Manual_de_uso_RecruitAI_Executive_vBeta1_0.pdf', '_blank');
   };
 
   return (
@@ -199,13 +261,22 @@ export function CandidateDashboard({ session, profile, setProfile, handleLogout 
         <div className="flex-1 flex flex-col bg-slate-50">
           <div className="p-3 border-b border-slate-100 bg-white flex items-center justify-between">
             <h2 className="text-xs font-bold text-slate-400 uppercase tracking-widest px-3">Simulador de Entrevista</h2>
-            <button 
-              onClick={() => setMessages(prev => [prev[0]])}
-              className="flex items-center gap-1.5 px-3 py-1 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all text-[10px] font-bold uppercase"
-            >
-              <Trash2 size={12} />
-              Limpiar chat
-            </button>
+            <div className="flex gap-2">
+              <button 
+                onClick={exportChatHistory}
+                className="flex items-center gap-1.5 px-3 py-1 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all text-[10px] font-bold uppercase"
+              >
+                <Download size={12} />
+                Exportar
+              </button>
+              <button 
+                onClick={() => setMessages([messages[0]])}
+                className="flex items-center gap-1.5 px-3 py-1 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all text-[10px] font-bold uppercase"
+              >
+                <Trash2 size={12} />
+                Limpiar
+              </button>
+            </div>
           </div>
 
           <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-hide">
@@ -230,7 +301,7 @@ export function CandidateDashboard({ session, profile, setProfile, handleLogout 
                         </div>
                       </div>
                       <span className="text-[10px] text-slate-400 mt-1 block px-1">
-                        {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>
                   </div>
