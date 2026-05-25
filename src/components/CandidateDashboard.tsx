@@ -179,53 +179,107 @@ export function CandidateDashboard({ session, profile, setProfile, handleLogout 
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#F8F9FA] overflow-hidden">
-      <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 z-10 flex-shrink-0">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
-            <Sparkles className="text-white w-5 h-5" />
+    <div className="flex h-[100dvh] min-h-screen flex-col overflow-hidden bg-[#F8F9FA]">
+      <header className="z-10 min-h-16 flex-shrink-0 border-b border-slate-200 bg-white px-3 py-2 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between sm:hidden">
+          <div className="flex min-w-0 items-center gap-2">
+            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-indigo-600">
+              <Sparkles className="text-white w-5 h-5" />
+            </div>
+            <h1 className="truncate text-sm font-bold tracking-tight text-slate-900">RecruitAI <span className="font-normal text-slate-500">Candidate</span></h1>
           </div>
-          <h1 className="text-lg font-bold text-slate-900 tracking-tight">RecruitAI <span className="font-normal text-slate-500">Candidate</span></h1>
-          <div className="h-4 w-[1px] bg-slate-200 mx-2"></div>
-          <span className="px-2 py-0.5 bg-indigo-100 text-indigo-700 text-[10px] font-bold uppercase rounded tracking-wider">Modo Entrenamiento</span>
-        </div>
-        
-        <div className="flex items-center gap-4">
-          <button 
-            onClick={handleLogout}
-            className="flex items-center gap-2 px-3 py-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all text-xs font-semibold"
-          >
-            <LogOut size={16} />
-            Salir
-          </button>
-          <button 
-            onClick={openManual}
-            className="flex items-center gap-2 px-3 py-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-all text-xs font-semibold"
-          >
-            <HelpCircle size={16} />
-            Guía
-          </button>
-          <button 
+          <button
             onClick={() => setIsProfileModalOpen(true)}
-            className="flex items-center gap-2 group cursor-pointer mr-4"
+            className="group ml-2 flex min-w-0 cursor-pointer items-center gap-2"
           >
-            <div className="flex flex-col items-end">
-              <span className="text-xs font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">
+            <div className="flex min-w-0 flex-col items-end">
+              <span className="max-w-[110px] truncate text-[11px] font-bold text-slate-900 transition-colors group-hover:text-indigo-600">
                 {profile?.full_name || 'Usuario'}
               </span>
-              <span className="px-1.5 py-0.5 bg-indigo-50 text-indigo-500 text-[8px] font-bold uppercase rounded tracking-wider">
+              <span className="rounded bg-indigo-50 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider text-indigo-500">
                 Candidato
               </span>
             </div>
-            <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200 group-hover:border-indigo-200 transition-all shadow-sm">
-              <img 
-                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${profile?.avatar_seed || profile?.id}`} 
-                alt="Profile" 
+            <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-slate-100 shadow-sm transition-all group-hover:border-indigo-200">
+              <img
+                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${profile?.avatar_seed || profile?.id}`}
+                alt="Profile"
                 className="w-full h-full object-cover"
                 referrerPolicy="no-referrer"
               />
             </div>
           </button>
+        </div>
+
+        <div className="mt-2 flex items-center justify-between sm:hidden">
+          <span className="inline-flex rounded bg-indigo-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-indigo-700">
+            Modo Entrenamiento
+          </span>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-semibold text-slate-500 transition-all hover:bg-red-50 hover:text-red-600"
+            >
+              <LogOut size={14} />
+              Salir
+            </button>
+            <button
+              onClick={openManual}
+              className="flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-semibold text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900"
+            >
+              <HelpCircle size={14} />
+              Guía
+            </button>
+          </div>
+        </div>
+
+        <div className="hidden min-w-0 items-center justify-between gap-3 sm:flex">
+          <div className="flex min-w-0 flex-1 items-center gap-3">
+            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-indigo-600">
+              <Sparkles className="text-white w-5 h-5" />
+            </div>
+            <h1 className="truncate text-lg font-bold tracking-tight text-slate-900">RecruitAI <span className="font-normal text-slate-500">Candidate</span></h1>
+            <div className="mx-2 h-4 w-[1px] bg-slate-200"></div>
+            <span className="inline-flex rounded bg-indigo-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-indigo-700">Modo Entrenamiento</span>
+          </div>
+
+          <div className="flex shrink-0 items-center gap-2 lg:gap-4">
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-semibold text-slate-500 transition-all hover:bg-red-50 hover:text-red-600"
+            >
+              <LogOut size={16} />
+              <span>Salir</span>
+            </button>
+            <button
+              onClick={openManual}
+              className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-semibold text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900"
+            >
+              <HelpCircle size={16} />
+              <span>Guía</span>
+            </button>
+            <button
+              onClick={() => setIsProfileModalOpen(true)}
+              className="group flex cursor-pointer items-center gap-2"
+            >
+              <div className="flex flex-col items-end">
+                <span className="text-xs font-bold text-slate-900 transition-colors group-hover:text-indigo-600">
+                  {profile?.full_name || 'Usuario'}
+                </span>
+                <span className="rounded bg-indigo-50 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider text-indigo-500">
+                  Candidato
+                </span>
+              </div>
+              <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-slate-100 shadow-sm transition-all group-hover:border-indigo-200">
+                <img
+                  src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${profile?.avatar_seed || profile?.id}`}
+                  alt="Profile"
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -236,21 +290,21 @@ export function CandidateDashboard({ session, profile, setProfile, handleLogout 
         onUpdate={(newProfile) => setProfile(newProfile)} 
       />
 
-      <div className="flex flex-1 overflow-hidden">
-        <div className="flex-1 bg-white border-r border-slate-200 flex flex-col p-8">
-          <div className="mb-6">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg">
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden lg:flex-row">
+        <div className="flex min-h-[260px] min-w-0 flex-col border-b border-slate-200 bg-white p-4 sm:p-6 lg:min-h-0 lg:flex-1 lg:border-b-0 lg:border-r lg:p-8">
+          <div className="mb-4 sm:mb-6">
+            <div className="mb-2 flex items-center gap-2">
+              <div className="rounded-lg bg-indigo-50 p-1.5 text-indigo-600">
                 <FileText size={18} />
               </div>
-              <h2 className="text-lg font-bold text-slate-900">Vacante / Oferta Laboral</h2>
+              <h2 className="text-base font-bold text-slate-900 sm:text-lg">Vacante / Oferta Laboral</h2>
             </div>
             <p className="text-sm text-slate-500">Pega aquí la descripción del puesto para el que deseas practicar.</p>
           </div>
           
-          <div className="flex-1 relative">
+          <div className="relative min-h-0 flex-1">
             <textarea
-              className="w-full h-full bg-slate-50 border border-slate-200 rounded-2xl p-6 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/10 placeholder:text-slate-400 transition-all resize-none leading-relaxed"
+              className="h-full w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm leading-relaxed text-slate-700 transition-all placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/10 sm:p-5 lg:p-6"
               placeholder="Ejemplo: Requerimos un desarrollador frontend con 3 años de experiencia en React, Tailwind CSS y consumo de APIs térmicas..."
               value={jobOffer}
               onChange={(e) => setJobOffer(e.target.value)}
@@ -258,20 +312,20 @@ export function CandidateDashboard({ session, profile, setProfile, handleLogout 
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col bg-slate-50">
-          <div className="p-3 border-b border-slate-100 bg-white flex items-center justify-between">
-            <h2 className="text-xs font-bold text-slate-400 uppercase tracking-widest px-3">Simulador de Entrevista</h2>
-            <div className="flex gap-2">
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col bg-slate-50">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 bg-white p-3 sm:px-4">
+            <h2 className="px-1 text-[10px] font-bold uppercase tracking-widest text-slate-400 sm:px-3 sm:text-xs">Simulador de Entrevista</h2>
+            <div className="flex gap-1 sm:gap-2">
               <button 
                 onClick={exportChatHistory}
-                className="flex items-center gap-1.5 px-3 py-1 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all text-[10px] font-bold uppercase"
+                className="flex items-center gap-1.5 rounded-lg px-2 py-1 text-[10px] font-bold uppercase text-slate-400 transition-all hover:bg-indigo-50 hover:text-indigo-600 sm:px-3"
               >
                 <Download size={12} />
                 Exportar
               </button>
               <button 
                 onClick={() => setMessages([messages[0]])}
-                className="flex items-center gap-1.5 px-3 py-1 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all text-[10px] font-bold uppercase"
+                className="flex items-center gap-1.5 rounded-lg px-2 py-1 text-[10px] font-bold uppercase text-slate-400 transition-all hover:bg-red-50 hover:text-red-500 sm:px-3"
               >
                 <Trash2 size={12} />
                 Limpiar
@@ -279,7 +333,7 @@ export function CandidateDashboard({ session, profile, setProfile, handleLogout 
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-hide">
+          <div className="scrollbar-hide flex-1 space-y-4 overflow-y-auto p-4 sm:space-y-5 sm:p-5 lg:space-y-6 lg:p-6">
             <AnimatePresence initial={false}>
               {messages.map((message) => (
                 <motion.div
@@ -288,13 +342,13 @@ export function CandidateDashboard({ session, profile, setProfile, handleLogout 
                   animate={{ opacity: 1, y: 0 }}
                   className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
-                  <div className={`flex gap-3 max-w-[85%] ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                    <div className={`w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center ${
+                  <div className={`flex max-w-[95%] gap-2 sm:max-w-[90%] sm:gap-3 lg:max-w-[85%] ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                    <div className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg ${
                       message.role === 'user' ? 'bg-slate-200' : 'bg-indigo-600'
                     }`}>
                       {message.role === 'user' ? <User size={16} className="text-slate-600" /> : <Bot size={16} className="text-white" />}
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <div className={message.role === 'user' ? 'chat-bubble-user-indigo' : 'chat-bubble-ai-white'}>
                         <div className="text-sm leading-relaxed markdown-body">
                           <Markdown>{message.text}</Markdown>
@@ -325,7 +379,7 @@ export function CandidateDashboard({ session, profile, setProfile, handleLogout 
             <div ref={messagesEndRef} />
           </div>
 
-          <div className="p-6 border-t border-slate-100 bg-white">
+          <div className="border-t border-slate-100 bg-white p-4 sm:p-5 lg:p-6">
             <div className="relative">
               <textarea
                 value={input}
@@ -338,7 +392,7 @@ export function CandidateDashboard({ session, profile, setProfile, handleLogout 
                 }}
                 placeholder={jobOffer ? "Escribe tu respuesta o pide preguntas..." : "Primero pega la vacante a la izquierda..."}
                 disabled={!jobOffer.trim()}
-                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 pr-14 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/5 transition-all resize-none min-h-[56px] max-h-[150px] disabled:opacity-50"
+                className="min-h-[56px] max-h-[150px] w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 pr-14 text-sm transition-all disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/5 sm:px-5 sm:py-4"
                 rows={1}
               />
               <button
@@ -353,8 +407,8 @@ export function CandidateDashboard({ session, profile, setProfile, handleLogout 
                 <Send size={18} />
               </button>
             </div>
-            <div className="flex items-center justify-between mt-3">
-              <div className="flex gap-2">
+            <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-wrap gap-2">
                 <button 
                   onClick={() => setInput("Genera 3 preguntas técnicas complejas sobre esta vacante.")}
                   disabled={!jobOffer.trim()}
@@ -370,7 +424,7 @@ export function CandidateDashboard({ session, profile, setProfile, handleLogout 
                   Practicar Pitch
                 </button>
               </div>
-              <p className="text-[10px] text-slate-400 uppercase tracking-widest font-medium">
+              <p className="text-[10px] font-medium uppercase tracking-widest text-slate-400 sm:text-right">
                 Interview Prep AI
               </p>
             </div>
