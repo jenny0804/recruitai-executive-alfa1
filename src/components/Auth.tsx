@@ -35,6 +35,8 @@ type AuthMode = 'login' | 'register';
 type UserRole = 'reclutador' | 'candidato';
 
 const NAV_LINKS = [
+  { id: 'quienes-somos', label: 'Nuestro equipo' },
+  { id: 'productos', label: '¿Qué necesitas hacer hoy?' },
   { id: 'conclusion', label: 'Conclusión' },
   { id: 'recomendaciones', label: 'Recomendaciones' },
 ] as const;
@@ -296,7 +298,10 @@ export const Auth: React.FC<{ onAuthSuccess: () => void }> = ({ onAuthSuccess })
         </section>
 
         {/* Productos — selector de rol (GoDaddy: “¿Qué necesitas?”) */}
-        <section className="border-b border-slate-100 bg-gradient-to-b from-white via-indigo-50/20 to-white py-16 lg:py-20">
+        <section
+          id="productos"
+          className="scroll-mt-36 border-b border-slate-100 bg-gradient-to-b from-white via-indigo-50/20 to-white py-16 lg:scroll-mt-24 lg:py-20"
+        >
           <div className={PAGE_MAX}>
             <div className="mb-12 text-center">
               <h2 className="mb-2 text-2xl font-bold text-slate-900 sm:text-3xl">
